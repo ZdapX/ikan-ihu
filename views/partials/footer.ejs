@@ -1,0 +1,103 @@
+<!-- Floating Bottom Navigation -->
+    <nav class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50">
+        <div class="bg-black/80 backdrop-blur-2xl border border-zinc-800 px-8 py-4 rounded-full flex items-center gap-8 shadow-2xl">
+            <a href="/" class="hover:text-[#FF0000] transition-colors <%= path === '/' ? 'text-[#FF0000]' : 'text-zinc-500' %>">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor font-bold">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                </svg>
+            </a>
+            <div class="w-[1px] h-6 bg-zinc-800"></div>
+            <a href="/admin/dashboard" class="hover:text-[#FF0000] transition-colors <%= path.includes('admin') ? 'text-[#FF0000]' : 'text-zinc-500' %>">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
+                </svg>
+            </a>
+        </div>
+    </nav>
+
+    <script>
+        // --- REAL-TIME SEARCH ---
+        const searchInput = document.getElementById('searchInput');
+        if(searchInput) {
+            searchInput.addEventListener('input', async (e) => {
+                const query = e.target.value;
+                const res = await fetch(`/api/search?q=${query}`);
+                const projects = await res.json();
+                const grid = document.getElementById('projectGrid');
+                
+                grid.innerHTML = projects.map(p => `
+                    <a href="/project/${p._id}" class="cyber-card bg-zinc-900/30 rounded-[2.5rem] p-8 flex flex-col md:flex-row items-center justify-between group">
+                        <div class="flex flex-col gap-2">
+                            <div class="flex items-center gap-3">
+                                <span class="px-3 py-1 bg-zinc-800 text-[10px] font-bold rounded-full tracking-widest text-zinc-400 group-hover:bg-[#FF0000] transition-colors">${p.language}</span>
+                                <span class="text-xs text-zinc-600 mono">${p.type}</span>
+                            </div>
+                            <h3 class="text-2xl font-bold group-hover:text-[#FF0000] transition-colors">${p.name}</h3>
+                        </div>
+                        <div class="flex items-center gap-8 mt-6 md:mt-0">
+                            <div class="flex flex-col items-center">
+                                <span class="text-zinc-500 text-xs uppercase tracking-widest">Likes</span>
+                                <span class="text-xl font-bold text-white">❤️ ${p.likes}</span>
+                            </div>
+                        </div>
+                    </a>
+                `).join('');
+            });
+        }
+
+        // --- INTERACTION LOGIC ---
+        async function handleInteraction(type, id) {
+            const res = await fetch(`/api/${type}/${id}`, { method: 'POST' });
+            const data = await res.json();
+            if(data.success) {
+                document.getElementById(`${type}Count`).innerText = data[type + 's'];
+                const btn = event.currentTarget;
+                btn.classList.add('scale-110', 'border-[#FF0000]');
+                setTimeout(() => btn.classList.remove('scale-110'), 200);
+            }
+        }
+
+        // --- CHAT SIMULATION ---
+        let currentAdmin = '';
+        const userId = 'USER_' + Math.floor(Math.random() * 9000 + 1000);
+        
+        function openChat(username) {
+            currentAdmin = username;
+            document.getElementById('chatWidget').classList.remove('hidden');
+            document.getElementById('chatWidget').classList.add('flex');
+            document.getElementById('chatTarget').innerText = 'Chat with ' + username;
+            document.getElementById('userIdDisplay').innerText = userId;
+        }
+
+        function closeChat() {
+            document.getElementById('chatWidget').classList.add('hidden');
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('chatInput');
+            if(!input.value) return;
+
+            const msgContainer = document.getElementById('chatMessages');
+            msgContainer.innerHTML += `<div class="bg-[#FF0000]/10 border border-[#FF0000]/20 p-3 rounded-2xl self-end max-w-[80%] text-right">${input.value}</div>`;
+            
+            const val = input.value;
+            input.value = '';
+
+            // Auto Reply Simulation
+            setTimeout(() => {
+                msgContainer.innerHTML += `<div class="bg-zinc-800 p-3 rounded-2xl self-start max-w-[80%] uppercase tracking-tighter">
+                    <span class="text-[#FF0000] font-bold">${currentAdmin}:</span> 
+                    Pesan diterima. Legends sedang sibuk mengembangkan masa depan. Tunggu balasan di dimensi lain.
+                </div>`;
+                msgContainer.scrollTop = msgContainer.scrollHeight;
+            }, 1500);
+        }
+
+        function copyCode() {
+            const code = document.querySelector('pre').innerText;
+            navigator.clipboard.writeText(code);
+            alert('Code Copied to System!');
+        }
+    </script>
+</body>
+</html>

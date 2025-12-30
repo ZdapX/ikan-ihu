@@ -1,0 +1,53 @@
+<%- include('../partials/header') %>
+
+<main class="min-h-screen flex items-center justify-center px-6">
+    <div class="w-full max-w-md">
+        <!-- Brand Logo -->
+        <div class="text-center mb-12">
+            <div class="text-5xl font-bold mb-2 tracking-tighter">
+                <span class="text-[#FF0000]">&lt;/&gt;</span>
+            </div>
+            <h1 class="text-xl font-bold tracking-[0.5em] text-zinc-500 uppercase">Identity Verification</h1>
+        </div>
+
+        <!-- Login Card -->
+        <div class="bg-zinc-900/30 border border-zinc-800 p-10 rounded-[2.5rem] backdrop-blur-md shadow-2xl relative overflow-hidden">
+            <!-- Glow Effect -->
+            <div class="absolute -top-20 -left-20 w-40 h-40 bg-[#FF0000]/10 blur-[100px]"></div>
+            
+            <% if (typeof error !== 'undefined') { %>
+                <div class="bg-red-500/10 border border-red-500/50 text-red-500 text-[10px] mono p-3 rounded-xl mb-6 text-center animate-pulse">
+                    ACCESS DENIED: <%= error %>
+                </div>
+            <% } %>
+
+            <form action="/admin/login" method="POST" class="space-y-6 relative z-10">
+                <div>
+                    <label class="block text-[10px] mono text-zinc-500 uppercase tracking-widest mb-2 ml-4">Codename</label>
+                    <input type="text" name="username" required 
+                           class="w-full bg-black border border-zinc-800 rounded-2xl py-4 px-6 outline-none focus:border-[#FF0000] transition-all mono text-sm"
+                           placeholder="Enter Username...">
+                </div>
+
+                <div>
+                    <label class="block text-[10px] mono text-zinc-500 uppercase tracking-widest mb-2 ml-4">Access Key</label>
+                    <input type="password" name="password" required 
+                           class="w-full bg-black border border-zinc-800 rounded-2xl py-4 px-6 outline-none focus:border-[#FF0000] transition-all mono text-sm"
+                           placeholder="••••••••">
+                </div>
+
+                <button type="submit" class="w-full btn-red py-4 rounded-2xl font-bold tracking-[0.3em] text-xs uppercase mt-4">
+                    AUTHORIZE ACCESS
+                </button>
+            </form>
+        </div>
+
+        <div class="text-center mt-10">
+            <a href="/" class="text-zinc-600 hover:text-white text-[10px] mono tracking-widest transition-colors italic">
+                ← ABORT AND RETURN TO REPOSITORY
+            </a>
+        </div>
+    </div>
+</main>
+
+<%- include('../partials/footer') %>

@@ -1,0 +1,49 @@
+<section class="max-w-6xl mx-auto px-6 mt-32 mb-20">
+    <div class="flex items-center gap-4 mb-10">
+        <div class="h-[1px] flex-1 bg-zinc-900"></div>
+        <h2 class="text-xl font-bold tracking-widest text-zinc-500 uppercase">Direct Contact</h2>
+        <div class="h-[1px] flex-1 bg-zinc-900"></div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <% admins.forEach(legend => { %>
+            <div class="cyber-card bg-zinc-900/20 rounded-[2.5rem] p-8 flex items-center gap-6 relative overflow-hidden group">
+                <!-- Background Decoration -->
+                <div class="absolute -right-4 -bottom-4 text-zinc-900/10 text-8xl font-bold select-none group-hover:text-[#FF0000]/5 transition-colors">
+                    <%= legend.role.toUpperCase() %>
+                </div>
+
+                <div class="relative">
+                    <img src="<%= legend.photoUrl %>" alt="<%= legend.name %>" class="w-24 h-24 rounded-3xl object-cover border-2 border-zinc-800 group-hover:border-[#FF0000] transition-colors">
+                    <div class="absolute -bottom-2 -right-2 w-6 h-6 bg-green-500 border-4 border-black rounded-full animate-pulse"></div>
+                </div>
+
+                <div class="flex-1 z-10">
+                    <div class="flex items-center gap-2 mb-1">
+                        <h4 class="text-xl font-bold"><%= legend.name %></h4>
+                        <span class="text-[10px] px-2 py-0.5 bg-zinc-800 rounded text-zinc-400 uppercase tracking-tighter"><%= legend.role %></span>
+                    </div>
+                    <p class="text-zinc-500 text-sm italic mb-4">"<%= legend.quote %>"</p>
+                    <button onclick="openChat('<%= legend.username %>')" class="btn-red px-6 py-2 rounded-full text-xs font-bold tracking-widest uppercase">
+                        Chat <%= legend.role %>
+                    </button>
+                </div>
+            </div>
+        <% }) %>
+    </div>
+</section>
+
+<!-- Floating Chat Widget (Simple Simulation) -->
+<div id="chatWidget" class="fixed bottom-10 right-10 w-80 h-96 bg-zinc-900 border border-zinc-800 rounded-[2.5rem] shadow-2xl z-[100] hidden flex-col overflow-hidden">
+    <div class="bg-[#FF0000] p-5 flex justify-between items-center">
+        <span id="chatTarget" class="font-bold text-sm uppercase tracking-widest">Chatting...</span>
+        <button onclick="closeChat()" class="text-white hover:rotate-90 transition-transform font-bold">✕</button>
+    </div>
+    <div id="chatMessages" class="flex-1 p-4 overflow-y-auto flex flex-col gap-3 mono text-[10px]">
+        <div class="bg-zinc-800 p-3 rounded-2xl self-start max-w-[80%]">System: Selamat datang! Anda masuk sebagai <span id="userIdDisplay" class="text-[#FF0000]"></span></div>
+    </div>
+    <div class="p-4 border-t border-zinc-800 flex gap-2">
+        <input type="text" id="chatInput" placeholder="Ketik pesan..." class="flex-1 bg-black border border-zinc-800 rounded-full px-4 py-2 text-xs outline-none focus:border-[#FF0000]">
+        <button onclick="sendMessage()" class="text-[#FF0000] font-bold px-2">SEND</button>
+    </div>
+</div>

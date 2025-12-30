@@ -1,0 +1,62 @@
+<%- include('partials/header') %>
+
+<main class="max-w-4xl mx-auto px-6 pt-32 pb-20">
+    <a href="/" class="text-zinc-500 hover:text-[#FF0000] mb-10 inline-block mono text-sm transition-colors">← BACK TO REPOSITORY</a>
+
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+        <div>
+            <div class="flex items-center gap-3 mb-4">
+                <span class="px-4 py-1 bg-[#FF0000] text-white text-[10px] font-bold rounded-full tracking-widest uppercase"><%= project.language %></span>
+                <span class="text-zinc-600 mono text-sm"><%= project.type %></span>
+            </div>
+            <h1 class="text-4xl md:text-6xl font-bold tracking-tighter"><%= project.name %></h1>
+        </div>
+        
+        <div class="flex gap-4">
+            <button onclick="handleInteraction('like', '<%= project._id %>')" class="group flex flex-col items-center p-4 bg-zinc-900/50 border border-zinc-800 rounded-3xl hover:border-[#FF0000] transition-all">
+                <span class="text-2xl group-hover:scale-125 transition-transform">❤️</span>
+                <span id="likeCount" class="text-xs font-bold mt-1 tracking-widest"><%= project.likes %></span>
+            </button>
+            <button onclick="handleInteraction('download', '<%= project._id %>')" class="group flex flex-col items-center p-4 bg-zinc-900/50 border border-zinc-800 rounded-3xl hover:border-[#FF0000] transition-all">
+                <span class="text-2xl group-hover:animate-bounce">⬇️</span>
+                <span id="downloadCount" class="text-xs font-bold mt-1 tracking-widest"><%= project.downloads %></span>
+            </button>
+        </div>
+    </div>
+
+    <% if (project.previewUrl) { %>
+    <div class="mb-12 rounded-[2.5rem] overflow-hidden border border-zinc-800">
+        <img src="<%= project.previewUrl %>" alt="Preview" class="w-full h-auto grayscale hover:grayscale-0 transition-all duration-700">
+    </div>
+    <% } %>
+
+    <div class="space-y-8">
+        <div class="bg-zinc-900/30 rounded-[2.5rem] border border-zinc-800 p-8">
+            <h3 class="text-[#FF0000] text-sm font-bold uppercase tracking-widest mb-6 flex items-center gap-2">
+                <span class="w-2 h-2 bg-[#FF0000] rounded-full animate-ping"></span> Content Source
+            </h3>
+            
+            <% if (project.type === 'CODE') { %>
+                <div class="relative group">
+                    <pre class="mono bg-black p-6 rounded-3xl border border-zinc-800 overflow-x-auto text-zinc-300 text-sm leading-relaxed"><%= project.content %></pre>
+                    <button onclick="copyCode()" class="absolute top-4 right-4 bg-zinc-800 text-[10px] px-3 py-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">COPY</button>
+                </div>
+            <% } else { %>
+                <div class="flex flex-col items-center py-12 bg-black rounded-3xl border border-zinc-800 border-dashed">
+                    <div class="text-4xl mb-4">📂</div>
+                    <p class="text-zinc-500 mono text-sm mb-6">File siap untuk diunduh secara publik.</p>
+                    <a href="<%= project.content %>" target="_blank" class="btn-red px-10 py-3 rounded-full font-bold text-sm tracking-widest">DOWNLOAD FILE</a>
+                </div>
+            <% } %>
+        </div>
+
+        <% if (project.notes) { %>
+        <div class="bg-zinc-900/10 rounded-[2.5rem] border border-zinc-800 p-8">
+            <h3 class="text-zinc-500 text-sm font-bold uppercase tracking-widest mb-4">Developer Notes</h3>
+            <p class="text-zinc-400 leading-relaxed text-sm"><%= project.notes %></p>
+        </div>
+        <% } %>
+    </div>
+</main>
+
+<%- include('partials/footer') %>

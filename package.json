@@ -1,7 +1,7 @@
 {
   "name": "source-code-hub",
   "version": "1.0.0",
-  "description": "Premium Platform",
+  "description": "Premium Platform - Legends Only",
   "main": "app.js",
   "scripts": {
     "start": "node app.js",
@@ -19,6 +19,6 @@
     "path": "^0.12.7"
   },
   "engines": {
-    "node": "18.x"
+    "node": "24.x"
   }
 }

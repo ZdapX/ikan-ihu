@@ -1,0 +1,57 @@
+<%- include('partials/header') %>
+
+<main class="max-w-6xl mx-auto px-6 pt-32">
+    <!-- Hero Section -->
+    <div class="mb-12">
+        <h1 class="text-5xl md:text-7xl font-bold tracking-tighter mb-4">
+            LEGENDS <span class="text-[#FF0000]">REPOSITORY</span>
+        </h1>
+        <p class="text-zinc-500 max-w-2xl text-lg">Platform eksklusif berbagi proyek source code berkualitas secara gratis oleh para Legends.</p>
+    </div>
+
+    <!-- Search Bar Real-time -->
+    <div class="relative mb-16">
+        <input type="text" id="searchInput" 
+               placeholder="Cari proyek atau bahasa (ex: NodeJs, Python...)" 
+               class="w-full bg-zinc-900/50 border border-zinc-800 rounded-2xl py-5 px-8 outline-none focus:border-[#FF0000] transition-all text-xl mono">
+        <div class="absolute right-6 top-5 text-zinc-600">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+        </div>
+    </div>
+
+    <!-- Projects Grid -->
+    <div id="projectGrid" class="grid grid-cols-1 gap-6">
+        <% if (projects.length > 0) { %>
+            <% projects.forEach(project => { %>
+                <a href="/project/<%= project._id %>" class="cyber-card bg-zinc-900/30 rounded-[2.5rem] p-8 flex flex-col md:flex-row items-center justify-between group">
+                    <div class="flex flex-col gap-2">
+                        <div class="flex items-center gap-3">
+                            <span class="px-3 py-1 bg-zinc-800 text-[10px] font-bold rounded-full tracking-widest text-zinc-400 group-hover:bg-[#FF0000] group-hover:text-white transition-colors"><%= project.language %></span>
+                            <span class="text-xs text-zinc-600 mono"><%= project.type %></span>
+                        </div>
+                        <h3 class="text-2xl font-bold group-hover:text-[#FF0000] transition-colors"><%= project.name %></h3>
+                    </div>
+                    
+                    <div class="flex items-center gap-8 mt-6 md:mt-0">
+                        <div class="flex flex-col items-center">
+                            <span class="text-zinc-500 text-xs uppercase tracking-widest">Likes</span>
+                            <span class="text-xl font-bold text-white group-hover:red-glow">❤️ <%= project.likes %></span>
+                        </div>
+                        <div class="flex flex-col items-center border-l border-zinc-800 pl-8">
+                            <span class="text-zinc-500 text-xs uppercase tracking-widest">Downloads</span>
+                            <span class="text-xl font-bold text-white group-hover:red-glow">⬇️ <%= project.downloads %></span>
+                        </div>
+                    </div>
+                </a>
+            <% }) %>
+        <% } else { %>
+            <div class="text-center py-20 border border-dashed border-zinc-800 rounded-[2.5rem]">
+                <p class="text-zinc-500 mono">Belum ada proyek yang dibagikan.</p>
+            </div>
+        <% } %>
+    </div>
+</main>
+
+<%- include('partials/chat-section') %> <!-- Kita buat di Batch berikutnya -->

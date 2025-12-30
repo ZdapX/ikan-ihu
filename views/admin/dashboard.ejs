@@ -1,0 +1,106 @@
+<%- include('../partials/header') %>
+
+<main class="max-w-6xl mx-auto px-6 pt-32 pb-20">
+    <div class="flex flex-col md:flex-row justify-between items-start gap-10">
+        
+        <!-- Sidebar: Profile & Actions -->
+        <div class="w-full md:w-1/3 space-y-6">
+            <div class="bg-zinc-900/50 border border-zinc-800 rounded-[2.5rem] p-8 text-center">
+                <img src="<%= admin.photoUrl %>" class="w-32 h-32 rounded-[2rem] mx-auto mb-6 border-2 border-[#FF0000] object-cover">
+                <h2 class="text-2xl font-bold"><%= admin.name %></h2>
+                <p class="text-[#FF0000] text-xs font-bold tracking-widest uppercase mb-4"><%= admin.role %></p>
+                <div class="flex flex-wrap justify-center gap-2">
+                    <% admin.hashtags.forEach(tag => { %>
+                        <span class="text-[10px] text-zinc-500 mono">#<%= tag %></span>
+                    <% }) %>
+                </div>
+                <a href="/admin/logout" class="mt-8 inline-block text-zinc-600 hover:text-white text-xs mono underline">TERMINATE SESSION</a>
+            </div>
+
+            <!-- Profile Update Form -->
+            <div class="bg-zinc-900/20 border border-zinc-800 rounded-[2.5rem] p-8">
+                <h3 class="text-sm font-bold mb-6 tracking-widest uppercase">Update Identity</h3>
+                <form action="/admin/profile/update" method="POST" enctype="multipart/form-data" class="space-y-4">
+                    <input type="text" name="name" value="<%= admin.name %>" placeholder="Display Name" class="w-full bg-black border border-zinc-800 rounded-xl p-3 text-sm outline-none focus:border-[#FF0000]">
+                    <textarea name="quote" class="w-full bg-black border border-zinc-800 rounded-xl p-3 text-sm outline-none focus:border-[#FF0000]" placeholder="Your Quote"><%= admin.quote %></textarea>
+                    <input type="file" name="photo" class="text-xs text-zinc-500">
+                    <button class="w-full btn-red py-3 rounded-xl font-bold text-xs tracking-widest uppercase">SAVE CHANGES</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Main Content: Upload & Project List -->
+        <div class="flex-1 w-full space-y-10">
+            <!-- Upload Form -->
+            <section class="bg-zinc-900/50 border border-zinc-800 rounded-[2.5rem] p-10">
+                <h2 class="text-3xl font-bold mb-8 italic">DEPLOY <span class="text-[#FF0000]">PROJECT</span></h2>
+                <form action="/admin/upload" method="POST" enctype="multipart/form-data" class="space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <input type="text" name="name" placeholder="Project Name" required class="bg-black border border-zinc-800 rounded-2xl p-4 outline-none focus:border-[#FF0000]">
+                        <input type="text" name="language" placeholder="Language (ex: NodeJs)" required class="bg-black border border-zinc-800 rounded-2xl p-4 outline-none focus:border-[#FF0000]">
+                    </div>
+                    
+                    <select name="type" id="typeSelect" class="w-full bg-black border border-zinc-800 rounded-2xl p-4 outline-none focus:border-[#FF0000]">
+                        <option value="CODE">SNIPPET CODE (Paste Text)</option>
+                        <option value="FILE">EXTERNAL FILE (Upload Zip/Txt)</option>
+                    </select>
+
+                    <div id="codeArea">
+                        <textarea name="codeContent" rows="8" placeholder="Paste your code here..." class="w-full bg-black border border-zinc-800 rounded-2xl p-6 mono text-sm outline-none focus:border-[#FF0000]"></textarea>
+                    </div>
+
+                    <div id="fileArea" class="hidden">
+                        <label class="block text-zinc-500 text-xs mb-2 mono">UPLOAD SOURCE FILE</label>
+                        <input type="file" name="fileContent" class="w-full bg-black border border-zinc-800 rounded-2xl p-4 outline-none">
+                    </div>
+
+                    <div>
+                        <label class="block text-zinc-500 text-xs mb-2 mono">PREVIEW IMAGE</label>
+                        <input type="file" name="preview" class="w-full bg-black border border-zinc-800 rounded-2xl p-4 outline-none">
+                    </div>
+
+                    <button type="submit" class="w-full btn-red py-5 rounded-[1.5rem] font-bold text-lg tracking-widest uppercase shadow-lg">PUSH TO REPOSITORY</button>
+                </form>
+            </section>
+
+            <!-- Project Management -->
+            <section class="space-y-4">
+                <h3 class="text-zinc-500 font-bold uppercase tracking-widest text-sm px-4">Your Deployments</h3>
+                <% projects.forEach(p => { %>
+                    <div class="bg-zinc-900/20 border border-zinc-800 rounded-3xl p-6 flex justify-between items-center group hover:border-zinc-600 transition-all">
+                        <div>
+                            <h4 class="font-bold"><%= p.name %></h4>
+                            <p class="text-[10px] text-zinc-600 mono"><%= p.language %> • <%= p.likes %> Likes</p>
+                        </div>
+                        <form action="/admin/delete/<%= p._id %>" method="POST">
+                            <button class="text-zinc-700 hover:text-red-500 transition-colors">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                </svg>
+                            </button>
+                        </form>
+                    </div>
+                <% }) %>
+            </section>
+        </div>
+    </div>
+</main>
+
+<script>
+    // Logic untuk toggle input Code vs File
+    const typeSelect = document.getElementById('typeSelect');
+    const codeArea = document.getElementById('codeArea');
+    const fileArea = document.getElementById('fileArea');
+
+    typeSelect.addEventListener('change', (e) => {
+        if(e.target.value === 'FILE') {
+            codeArea.classList.add('hidden');
+            fileArea.classList.remove('hidden');
+        } else {
+            codeArea.classList.remove('hidden');
+            fileArea.classList.add('hidden');
+        }
+    });
+</script>
+
+<%- include('../partials/footer') %>
